@@ -7,10 +7,11 @@ var width = 1000;
 var height = 700;
 
 var player = {x: width/2, y: 600, sx: 150, sy: 30}
+var lives = 5
 
 var ball = {x: 100, y: 300, sx: 30, sy: 30, direction: "upleft", speed: 2 }
 
-var grid = [], numX = 5, numY = 3, tile = {sx: 100, sy: 30};
+var grid = [], numX = 2, numY = 3, tile = {sx: 100, sy: 30};
 var padding = 1, margin = 100
 
 for(let i = 0; i < numX; i ++){
@@ -79,9 +80,11 @@ function update() {
     }
     if(ball.direction == 'upright' && ball.y <= 0){
         ball.direction = "downright"
+        lives--
     }
     if(ball.direction == 'downright' && ball.y >= (height - ball.sy)){
         ball.direction = "upright"
+        lives--
     }
 
     //Check for collision with the tiles of the grid
@@ -119,6 +122,32 @@ function update() {
                 return; // Exit the loop to prevent multiple bounces per frame
             } 
         }
+    }
+
+    //Ball and player collision
+    if(areColliding(ball.x, ball.y, ball.sx, ball.sy, player.x, player.y, player.sx, player.sy)){
+        if (ball.direction == "upleft") ball.direction = "downleft";
+        else if (ball.direction == "upright") ball.direction = "downright";
+        else if (ball.direction == "downleft") ball.direction = "upleft";
+        else if (ball.direction == "downright") ball.direction = "upright";
+    }
+
+    //Check for out of lives
+    if(lives <= 0){
+        alert("OUT OF LIVES")
+    }
+    
+    //CHECK FOR WIN
+    let wincondition = true
+    for(let i = 0; i < numX; i ++){
+        for(let j = 0; j < numY; j ++){
+            if(grid[i][j] != null){
+                wincondition = false
+            }
+        }
+    }
+    if(wincondition){
+        alert("WON THE GAME")
     }
 }
 
