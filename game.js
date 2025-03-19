@@ -8,7 +8,7 @@ var height = 700;
 
 var player = {x: width/2, y: 600, sx: 150, sy: 30}
 
-var ball = {x: 100, y: 200, sx: 30, sy: 30, direction: "downleft", speed: 2}
+var ball = {x: 100, y: 300, sx: 30, sy: 30, direction: "upleft", speed: 2 }
 
 var grid = [], numX = 5, numY = 3, tile = {sx: 100, sy: 30};
 var padding = 1, margin = 100
@@ -83,6 +83,43 @@ function update() {
     if(ball.direction == 'downright' && ball.y >= (height - ball.sy)){
         ball.direction = "upright"
     }
+
+    //Check for collision with the tiles of the grid
+    for(let i = 0; i < numX; i ++){
+        for(let j = 0; j < numY; j ++){
+                            
+            if (grid[i][j] === null) continue;
+                
+            if (areColliding(ball.x, ball.y, ball.sx, ball.sy, i * (tile.sx + padding) + margin, j * (tile.sy + padding) + margin, tile.sx, tile.sy)) {
+    
+                grid[i][j] = null; // Remove tile
+
+                let ballCenterX = ball.x + ball.sx / 2;
+                let ballCenterY = ball.y + ball.sy / 2;
+                let tileCenterX = i * (tile.sx + padding) + margin + tile.sx / 2;
+                let tileCenterY = j * (tile.sy + padding) + margin + tile.sy / 2;
+            
+                let dx = Math.abs(ballCenterX - tileCenterX);
+                let dy = Math.abs(ballCenterY - tileCenterY);
+            
+                if (dx > dy) {
+                    // Horizontal collision: Reverse X direction
+                    if (ball.direction == "upleft") ball.direction = "upright";
+                    else if (ball.direction == "upright") ball.direction = "upleft";
+                    else if (ball.direction == "downleft") ball.direction = "downright";
+                    else if (ball.direction == "downright") ball.direction = "downleft";
+                } else {
+                    // Vertical collision: Reverse Y direction
+                    if (ball.direction == "upleft") ball.direction = "downleft";
+                    else if (ball.direction == "upright") ball.direction = "downright";
+                    else if (ball.direction == "downleft") ball.direction = "upleft";
+                    else if (ball.direction == "downright") ball.direction = "upright";
+                }
+
+                return; // Exit the loop to prevent multiple bounces per frame
+            } 
+        }
+    }
 }
 
 function draw() {
@@ -95,7 +132,7 @@ function draw() {
     context.fillStyle = "black"
     context.fillRect(ball.x, ball.y, ball.sx, ball.sy);
   
-    /*for(let i = 0; i < numX; i ++){
+    for(let i = 0; i < numX; i ++){
         for(let j = 0; j < numY; j ++){
             switch (j) {
                 case 0:
@@ -111,10 +148,12 @@ function draw() {
                 default:
                   context.fillStyle = "black"
                   break;
-              }
-            context.fillRect(i * (tile.sx + padding) + margin, j * (tile.sy + padding) + margin, tile.sx, tile.sy);
+            }
+            if(grid[i][j] != null){
+                context.fillRect(i * (tile.sx + padding) + margin, j * (tile.sy + padding) + margin, tile.sx, tile.sy);
+            }
         }
-    }*/
+    }
 };
 
 function keyup(key) {
