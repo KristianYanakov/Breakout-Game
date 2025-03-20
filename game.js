@@ -11,7 +11,7 @@ var lives = 5
 
 var ball = {x: 100, y: 300, sx: 30, sy: 30, direction: "upleft", speed: 2 }
 
-var grid = [], numX = 2, numY = 3, tile = {sx: 100, sy: 30};
+var grid = [], numX = 8, numY = 5, tile = {sx: 100, sy: 30};
 var padding = 1, margin = 100
 
 for(let i = 0; i < numX; i ++){
@@ -170,10 +170,18 @@ function draw() {
                 case 1:
                   context.fillStyle = "blue"
                   break;
-                // …
                 case 2:
                   context.fillStyle = "green"
                   break;
+                case 3:
+                    context.fillStyle = "yellow"
+                    break;
+                case 4:
+                    context.fillStyle = "pink"
+                    break;
+                case 5:
+                    context.fillStyle = "orange"
+                    break;
                 default:
                   context.fillStyle = "black"
                   break;
